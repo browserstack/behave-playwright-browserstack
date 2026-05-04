@@ -1,0 +1,61 @@
+# =============================
+# Set BrowserStack Credentials
+# =============================
+# Add your BrowserStack userName and accessKey here, or set the
+# BROWSERSTACK_USERNAME and BROWSERSTACK_ACCESS_KEY environment
+# variables. Env vars take precedence over the values in this file.
+userName: YOUR_USERNAME
+accessKey: YOUR_ACCESS_KEY
+
+# ======================
+# BrowserStack Reporting
+# ======================
+projectName: BrowserStack Samples
+buildName: behave-playwright-sdk-build-1
+# `buildIdentifier` is a unique id appended to buildName for every run.
+# ${BUILD_NUMBER} (default) is an incremental counter; ${DATE_TIME} is a timestamp.
+buildIdentifier: '#${BUILD_NUMBER}'
+
+# `framework` lets the SDK send test context (test name, status) to BrowserStack.
+framework: behave
+
+# =======================================
+# Platforms (Browsers / Devices to test)
+# =======================================
+# Each entry below is one cross-browser cell. The SDK runs `parallelsPerPlatform`
+# parallel sessions per entry, so the three entries below x 1 = 3 parallel sessions.
+# These three browsers map 1:1 to the three Playwright engine families (chromium /
+# firefox / webkit). The customer code in features/environment.py calls
+# `chromium.launch()` — the SDK transparently routes the launch to the correct
+# per-platform browser at runtime, so no per-platform branching is needed.
+platforms:
+  - os: Windows
+    osVersion: 11
+    browserName: chrome
+    browserVersion: latest
+  - os: Windows
+    osVersion: 11
+    browserName: playwright-firefox
+    browserVersion: latest
+  - os: OS X
+    osVersion: Sonoma
+    browserName: playwright-webkit
+    browserVersion: latest
+
+parallelsPerPlatform: 1
+
+# ===================================
+# BrowserStack Local (private hosts)
+# ===================================
+# Default false in this config. The local-mode example sets this true.
+browserstackLocal: false
+
+# ===========
+# Diagnostics
+# ===========
+debug: true
+networkLogs: false
+consoleLogs: errors
+
+# Identifier so BrowserStack can tag the sample source — please leave as-is.
+source: behave-playwright-sdk:sample-master:v1.0

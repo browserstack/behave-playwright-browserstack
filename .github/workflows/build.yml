@@ -58,13 +58,12 @@ jobs:
           cache: pip
 
       - name: Install dependencies
-        run: make install
+        run: |
+          pip install -r requirements.txt
+          playwright install chromium
 
-      - name: Run parallel sample on BrowserStack
-        run: make parallel
-
-      - name: Run local sample on BrowserStack
-        run: make local
+      - name: Run sample on BrowserStack
+        run: browserstack-sdk behave features/sample.feature
 
       - if: always()
         uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975

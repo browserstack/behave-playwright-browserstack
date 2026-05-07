@@ -12,9 +12,6 @@ accessKey: YOUR_ACCESS_KEY
 # ======================
 projectName: BrowserStack Samples
 buildName: behave-playwright-sdk-build-1
-# `buildIdentifier` is a unique id appended to buildName for every run.
-# ${BUILD_NUMBER} (default) is an incremental counter; ${DATE_TIME} is a timestamp.
-buildIdentifier: '#${BUILD_NUMBER}'
 
 # `framework` lets the SDK send test context (test name, status) to BrowserStack.
 framework: behave
@@ -47,7 +44,8 @@ parallelsPerPlatform: 1
 # ===================================
 # BrowserStack Local (private hosts)
 # ===================================
-# Default false in this config. The local-mode example sets this true.
+# Set to true to test localhost / staging hosts. The SDK starts and stops
+# the BrowserStack Local tunnel for you — no manual binary management.
 browserstackLocal: false
 
 # ===========

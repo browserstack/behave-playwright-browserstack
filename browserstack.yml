@@ -56,4 +56,4 @@ networkLogs: false
 consoleLogs: errors
 
 # Identifier so BrowserStack can tag the sample source — please leave as-is.
-source: behave-playwright:sample-master:v1.0
+source: behave-playwright-browserstack:sample-main:v1.0

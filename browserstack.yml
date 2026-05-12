@@ -1,30 +1,39 @@
 # =============================
 # Set BrowserStack Credentials
 # =============================
-# Add your BrowserStack userName and accessKey here, or set the
-# BROWSERSTACK_USERNAME and BROWSERSTACK_ACCESS_KEY environment
-# variables. Env vars take precedence over the values in this file.
+# Add your BrowserStack userName and accessKey here or set BROWSERSTACK_USERNAME and
+# BROWSERSTACK_ACCESS_KEY as env variables
 userName: YOUR_USERNAME
 accessKey: YOUR_ACCESS_KEY
 
 # ======================
 # BrowserStack Reporting
 # ======================
+# The following capabilities are used to set up reporting on BrowserStack:
+# Set 'projectName' to the name of your project. Example, Marketing Website
 projectName: BrowserStack Samples
+# Set `buildName` as the name of the job / testsuite being run
 buildName: behave-playwright-sdk-build-1
-
-# `framework` lets the SDK send test context (test name, status) to BrowserStack.
+# `buildIdentifier` is a unique id to differentiate every execution that gets appended to
+# buildName. Choose your buildIdentifier format from the available expressions:
+# ${BUILD_NUMBER} (Default): Generates an incremental counter with every execution
+# ${DATE_TIME}: Generates a Timestamp with every execution. Eg. 05-Nov-19:30
+# Read more about buildIdentifiers here -> https://www.browserstack.com/docs/automate/selenium/organize-tests
+buildIdentifier: '#${BUILD_NUMBER}' # Supports strings along with either/both ${expression}
+# Set `framework` of your test suite. Example, `testng`, `cucumber`, `cucumber-testng`
+# This property is needed to send test context to BrowserStack (test name, status)
 framework: behave
+
+source: behave-playwright-browserstack:sample-main:v1.0
 
 # =======================================
 # Platforms (Browsers / Devices to test)
 # =======================================
-# Each entry below is one cross-browser cell. The SDK runs `parallelsPerPlatform`
-# parallel sessions per entry, so the three entries below x 1 = 3 parallel sessions.
-# These three browsers map 1:1 to the three Playwright engine families (chromium /
-# firefox / webkit). The customer code in features/environment.py calls
-# `chromium.launch()` — the SDK transparently routes the launch to the correct
-# per-platform browser at runtime, so no per-platform branching is needed.
+# Platforms object contains all the browser / device combinations you want to test on.
+# Entire list available here -> (https://www.browserstack.com/list-of-browsers-and-platforms/automate)
+# The three entries below map 1:1 to the Playwright engine families (chromium / firefox /
+# webkit). Customer code calls `chromium.launch()` and the SDK transparently routes the
+# launch to the per-platform browser at runtime, so no per-platform branching is needed.
 platforms:
   - os: Windows
     osVersion: 11
@@ -39,21 +48,35 @@ platforms:
     browserName: playwright-webkit
     browserVersion: latest
 
+# =======================
+# Parallels per Platform
+# =======================
+# The number of parallel threads to be used for each platform set.
+# BrowserStack's SDK runner will select the best strategy based on the configured value
+#
+# Example 1 - If you have configured 3 platforms and set `parallelsPerPlatform` as 2, a total of 6 (2 * 3) parallel threads will be used on BrowserStack
+#
+# Example 2 - If you have configured 1 platform and set `parallelsPerPlatform` as 5, a total of 5 (1 * 5) parallel threads will be used on BrowserStack
 parallelsPerPlatform: 1
 
-# ===================================
-# BrowserStack Local (private hosts)
-# ===================================
-# Set to true to test localhost / staging hosts. The SDK starts and stops
-# the BrowserStack Local tunnel for you — no manual binary management.
-browserstackLocal: false
+# ==========================================
+# BrowserStack Local
+# (For localhost, staging/private websites)
+# ==========================================
+# Set browserStackLocal to true if your website under test is not accessible publicly over the internet
+# Learn more about how BrowserStack Local works here -> https://www.browserstack.com/docs/automate/selenium/local-testing-introduction
+browserstackLocal: false # <boolean> (Default false)
 
-# ===========
-# Diagnostics
-# ===========
-debug: true
-networkLogs: false
-consoleLogs: errors
+# Options to be passed to BrowserStack local in-case of advanced configurations
+# browserStackLocalOptions:
+  # localIdentifier: # <string> (Default: null) Needed if you need to run multiple instances of local.
+  # forceLocal: true  # <boolean> (Default: false) Set to true if you need to resolve all your traffic via BrowserStack Local tunnel.
+  # Entire list of arguments available here -> https://www.browserstack.com/docs/automate/selenium/manage-incoming-connections
 
-# Identifier so BrowserStack can tag the sample source — please leave as-is.
-source: behave-playwright-browserstack:sample-main:v1.0
+# ===================
+# Debugging features
+# ===================
+debug: true # <boolean> # Set to true if you need screenshots for every selenium command ran
+networkLogs: false # <boolean> Set to true to enable HAR logs capturing
+consoleLogs: errors # <string> Remote browser's console debug levels to be printed (Default: errors)
+# Available options are `disable`, `errors`, `warnings`, `info`, `verbose` (Default: errors)

@@ -13,18 +13,38 @@ This repo shows how to run [behave](https://behave.readthedocs.io/) tests on Bro
 * Set `BROWSERSTACK_USERNAME` and `BROWSERSTACK_ACCESS_KEY` as environment variables, or replace `userName` and `accessKey` directly in `browserstack.yml` with your [BrowserStack Username and Access Key](https://www.browserstack.com/accounts/settings). Env vars take precedence.
 
 ### Running your tests
-Run the sample in parallel across the 3 Playwright browser engines (chromium / firefox / webkit) declared in `browserstack.yml`:
+There are two sample scenarios in `features/`:
+
+* **`features/sample.feature`** — drives `https://www.bstackdemo.com` (a public site) and adds a product to the cart.
+* **`features/local.feature`** — drives `http://bs-local.com:45454/` through the BrowserStack Local tunnel; verifies the page title contains "BrowserStack Local".
+
+`browserstack.yml` enables `browserstackLocal: true`, so the SDK starts and stops the BrowserStack Local tunnel for you on every run — no manual binary lifecycle.
+
+#### Sample test (public site)
+Runs in parallel across the 3 Playwright browser engines (chromium / firefox / webkit) declared in `browserstack.yml`:
 
 ```sh
 browserstack-sdk behave features/sample.feature
 ```
 
+#### Local test (private / localhost host)
+Start a local HTTP server first — `features/local-html/` contains a tiny page titled "BrowserStack Local Test Page":
+
+```sh
+python3 -m http.server 45454 --directory features/local-html
+```
+
+Then in a separate terminal:
+
+```sh
+browserstack-sdk behave features/local.feature
+```
+
+`bs-local.com` is a hostname BrowserStack Local resolves to your machine inside the remote browser — for your own app, point your scenarios at `http://bs-local.com:<port>/` instead of a public URL.
+
 Understand how many parallel sessions you need by using our [Parallel Test Calculator](https://www.browserstack.com/automate/parallel-calculator?ref=github).
 
 Alternatively the variables can be set in the environment using env or your CI framework (like GitHub Actions or Jenkins). See `.github/workflows/build.yml` for a GitHub Actions example — it runs on `workflow_dispatch` (manual trigger) with a commit SHA input and posts a status check back to that commit.
-
-### Testing a private host (BrowserStack Local)
-If your app lives on `localhost`, a staging host, or behind a firewall, set `browserstackLocal: true` in `browserstack.yml` and rerun the same command. The SDK starts and stops the BrowserStack Local tunnel for you — no manual binary download or lifecycle management. Then point your scenarios at `http://bs-local.com:<port>/` (a hostname BrowserStack Local resolves to your machine) instead of a public URL.
 
 ### How the SDK changes things
 - **One `browserstack.yml`** declares platforms; the SDK picks them up automatically.
@@ -39,9 +59,13 @@ If your app lives on `localhost`, a staging host, or behind a firewall, set `bro
 ├── requirements.txt
 └── features/
     ├── sample.feature         # bstackdemo add-to-cart scenario
+    ├── local.feature          # BrowserStack Local tunnel scenario
+    ├── local-html/
+    │   └── index.html         # static page served on :45454 for local.feature
     ├── environment.py         # behave hooks: launch browser, hand to context.page
     └── steps/
-        └── sample_steps.py
+        ├── sample_steps.py
+        └── local_steps.py
 ```
 
 ### Further Reading
